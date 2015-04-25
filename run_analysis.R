@@ -37,8 +37,9 @@ testSet <- cbind(testSet, testSet_subject)
 combinedSet <- rbind(trainingSet, testSet)
 
 # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
-meanSet <- sapply(combinedSet, mean, na.rm=TRUE)
-sdSet <- sapply(combinedSet, sd, na.rm=TRUE)
+# Find columns with mean() and std() - keep Activity and Subject too
+filteredCols <- grepl("mean\\(\\)|std\\(\\)|Subject|Activity", names(combinedSet))
+combinedSet <- combinedSet[,filteredCols]
 
 # 3. Uses descriptive activity names to name the activities in the data set
 combinedSet$Activity <- factor(combinedSet$Activity, levels=activityMap$V1, labels=activityMap$V2)
@@ -48,5 +49,6 @@ combinedSet$Activity <- factor(combinedSet$Activity, levels=activityMap$V1, labe
 
 # 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 combinedTable <- data.table(combinedSet)
-tidyData <- ddply(combinedTable, c("Subject","Activity"), numcolwise(mean))
+tidyData <- ddply(combinedTable, c("Activity","Subject"), numcolwise(mean))
 write.table(tidyData, file="tidyData.txt", sep=",", row.names=FALSE)
+
