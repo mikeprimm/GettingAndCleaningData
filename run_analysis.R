@@ -62,7 +62,13 @@ print("Map activity names in place of activity IDs")
 combinedSet$Activity <- factor(combinedSet$Activity, levels=activityMap$V1, labels=activityMap$V2)
 
 # 4. Appropriately labels the data set with descriptive variable names. 
-#(completed earlier)
+cnames <- colnames(combinedSet)
+cnames <- gsub("-mean\\(\\)", " (mean)", cnames)
+cnames <- gsub("-std\\(\\)", " (std dev)", cnames)
+cnames <- gsub("-X", " (X axis)", cnames)
+cnames <- gsub("-Y", " (Y axis)", cnames)
+cnames <- gsub("-Z", " (Z axis)", cnames)
+colnames(combinedSet) <- cnames
 
 # 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 print("Create tidy data set containing averages for each value, grouped by activity and subject")
